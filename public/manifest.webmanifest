@@ -1,0 +1,11 @@
+{
+  "name": "نتعلّم جدول الضرب",
+  "short_name": "جدول الضرب",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e7f0e3",
+  "theme_color": "#fff8e8",
+  "icons": []
+}

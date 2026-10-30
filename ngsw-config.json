@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {"files": ["/index.html", "/*.css", "/*.js", "/assets/manifest.webmanifest"]}
+    },
+    {
+      "name": "audio",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {"files": ["/assets/audio/multiplication-song.mpeg", "/assets/timings.json"]}
+    }
+  ]
+}

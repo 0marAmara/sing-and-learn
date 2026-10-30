@@ -1,0 +1,11 @@
+{
+  "name": "Sing and Learn",
+  "short_name": "Sing and Learn",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e7f0e3",
+  "theme_color": "#fff8e8",
+  "icons": []
+}

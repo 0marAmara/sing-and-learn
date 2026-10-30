@@ -1,0 +1,56 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "sing-and-learn": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "sal",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/sing-and-learn",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "tsconfig.app.json",
+            "assets": ["src/assets"],
+            "styles": ["src/styles.css", "src/game-meadow.css"],
+            "scripts": [],
+            "serviceWorker": "ngsw-config.json"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {"type": "initial", "maximumWarning": "1mb", "maximumError": "2mb"},
+                {"type": "anyComponentStyle", "maximumWarning": "20kb", "maximumError": "30kb"}
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {"buildTarget": "sing-and-learn:build:production"},
+            "development": {"buildTarget": "sing-and-learn:build:development"}
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}

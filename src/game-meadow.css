@@ -1,0 +1,24 @@
+/* The play screen follows the approved meadow direction: quiet sky, soft hills, and one focused card. */
+.app-shell.game-playing .topbar{display:none}.app-shell.game-playing main{padding-top:0;min-height:100vh}.app-shell.game-playing .game-screen{margin-top:0!important;padding-top:0!important}
+.game-screen{position:relative;isolation:isolate;max-width:900px!important;min-height:calc(100vh - 78px);padding-top:24px!important}
+.game-screen:before{content:"";position:absolute;z-index:-2;inset:-42px -30px 0;border-radius:34px;background:radial-gradient(circle at 12% 13%,#f3d077 0 36px,#f3d07720 37px 51px,transparent 52px),linear-gradient(#e7f1e6 0 63%,#e9efd9 100%)}
+.meadow-cloud{position:absolute;z-index:-1;top:74px;right:10%;width:126px;height:38px;border-radius:999px;background:#fff9;box-shadow:0 8px 18px #b6cdb622;animation:cloud-drift 14s ease-in-out infinite alternate}
+.meadow-cloud:before,.meadow-cloud:after{content:"";position:absolute;bottom:7px;border-radius:50%;background:#fff9}
+.meadow-cloud:before{left:18px;width:52px;height:52px}
+.meadow-cloud:after{right:14px;width:68px;height:68px;bottom:4px}
+.game-screen:after{content:"";position:absolute;z-index:-1;left:50%;bottom:-80px;width:125%;height:280px;transform:translateX(-50%);background:linear-gradient(#c4d9a8 0 44%,#a9c98b 45% 72%,#91b676 73%);clip-path:polygon(0 37%,12% 23%,26% 35%,41% 16%,56% 33%,70% 18%,84% 31%,100% 13%,100% 100%,0 100%);opacity:.95}
+.game-screen .game-header{max-width:610px;margin:0 auto;color:#70846b;background:#fffdf380;border:1px solid #d7e2cd;border-radius:18px;padding:9px 12px;backdrop-filter:blur(4px)}
+.game-screen .game-header .quiet{background:transparent;border:0;padding:5px 8px;color:#47724d}
+.game-screen .progress-dots{max-width:610px;margin:19px auto 22px}
+.game-screen .game-card{position:relative;z-index:1;background:#fffdf3f2;border-color:#e3e5d5;border-radius:30px;box-shadow:0 9px 0 #77986212,0 24px 70px #527d431c;backdrop-filter:blur(4px)}
+.game-screen .game-card h1{color:#315e3e;font-size:28px}
+.game-screen .game-card .equation{color:#315e3e;font-size:45px;letter-spacing:.04em}
+.game-screen .game-card .game-progress{color:#83917a;margin-top:2px}
+.game-screen .choice-grid button{border-radius:18px;min-height:92px}
+.game-screen .feedback{height:42px}
+.game-screen .replay{color:#47724d;border-color:#afc7a4}
+@media(max-width:650px){.game-screen{min-height:calc(100vh - 68px);padding-top:10px!important}.game-screen:before{inset:-25px -16px 0;border-radius:25px}.game-screen:after{height:220px;bottom:-60px}.game-screen .game-header{padding:7px 9px}.game-screen .game-card{border-radius:27px;padding:25px 16px 24px}.game-screen .game-card .equation{font-size:38px}.game-screen .choice-grid button{min-height:82px}}
+
+@media(max-width:650px){.game-screen{margin-top:-25px!important;padding-top:0!important}.game-screen .game-header{position:sticky;top:0;z-index:4;width:calc(100% + 32px);max-width:none;min-height:58px;margin:0 -16px;padding:10px 16px;border:0;border-bottom:1px solid #cfddc8;border-radius:0;background:#f6fbf1e8;box-shadow:0 5px 18px #4b714020;backdrop-filter:blur(12px)}.game-screen .game-header .back-button{width:40px;height:40px;padding:0;display:grid;place-items:center;border:0;border-radius:12px;background:#ffffff88;color:#47724d}.game-screen .game-header .back-button .icon-svg{width:23px;height:23px;stroke-width:2.3}.game-screen .game-header>span{font-size:11px;font-weight:700;color:#6f836b}.game-screen .game-header strong{font-size:15px}.game-screen .game-card{margin-top:68px;background:transparent;border-color:transparent;box-shadow:none;backdrop-filter:none}}
+
+@keyframes cloud-drift{from{transform:translateX(-8px)}to{transform:translateX(10px)}}

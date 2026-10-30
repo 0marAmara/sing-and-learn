@@ -1,0 +1,27 @@
+{
+  "name": "sing-and-learn",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "ng serve --host 127.0.0.1 --port 4300",
+    "build": "ng build",
+    "test": "npm run build"
+  },
+  "dependencies": {
+    "@angular/common": "^19.2.5",
+    "@angular/compiler": "^19.2.5",
+    "@angular/core": "^19.2.5",
+    "@angular/forms": "^19.2.5",
+    "@angular/platform-browser": "^19.2.5",
+    "@angular/platform-browser-dynamic": "^19.2.5",
+    "@angular/service-worker": "^19.2.18",
+    "rxjs": "^7.8.2",
+    "zone.js": "^0.15.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.2.6",
+    "@angular/cli": "^19.2.6",
+    "@angular/compiler-cli": "^19.2.5",
+    "typescript": "~5.7.3"
+  }
+}
