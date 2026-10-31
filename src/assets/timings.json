@@ -1,45 +1,55 @@
 {
-  "table": 2,
-  "timings": [
+  "tables": [
     {
-      "start": 9,
-      "end": 12
+      "table": 2,
+      "audio": "assets/audio/multiplication-song.mp3",
+      "timings": [
+        { "start": 9, "end": 12 },
+        { "start": 13, "end": 16.37 },
+        { "start": 17, "end": 21 },
+        { "start": 22, "end": 26 },
+        { "start": 41, "end": 45 },
+        { "start": 46, "end": 50 },
+        { "start": 49.67, "end": 53.73 },
+        { "start": 53.76, "end": 57 },
+        { "start": 80, "end": 83.8 },
+        { "start": 83.82, "end": 87 }
+      ]
     },
     {
-      "start": 13,
-      "end": 16.37
+      "table": 3,
+      "audio": "assets/audio/table-3.mp3",
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     },
     {
-      "start": 17,
-      "end": 21
+      "table": 4,
+      "audio": "assets/audio/table-4.mp3",
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     },
     {
-      "start": 22,
-      "end": 26
+      "table": 5,
+      "audio": "assets/audio/table-5.mp3",
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     },
     {
-      "start": 41,
-      "end": 45
+      "table": 6,
+      "audio": "assets/audio/table-6.mp3",
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     },
     {
-      "start": 46,
-      "end": 50
+      "table": 7,
+      "audio": "assets/audio/table-7.mp3",
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     },
     {
-      "start": 49.67,
-      "end": 53.73
+      "table": 8,
+      "audio": null,
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     },
     {
-      "start": 53.76,
-      "end": 57
-    },
-    {
-      "start": 80,
-      "end": 83.8
-    },
-    {
-      "start": 83.82,
-      "end": 87
+      "table": 9,
+      "audio": "assets/audio/table-9.mp3",
+      "timings": [null, null, null, null, null, null, null, null, null, null]
     }
   ]
 }

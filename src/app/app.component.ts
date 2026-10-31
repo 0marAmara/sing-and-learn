@@ -2,14 +2,26 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import defaultTimingConfig from '../assets/timings.json';
-import { SavedScore, Timing, TimingConfig } from './models';
+import { SavedScore, TableConfig, Timing, TimingConfig, VideoLink } from './models';
 
 type Screen = 'home' | 'game' | 'setup' | 'complete';
 type Mode = 'ordered' | 'shuffle';
 type Feedback = 'none' | 'wrong' | 'correct';
 
 const COUNT = 10;
-const TIMINGS_KEY = 'sing-and-learn.timings.v2';
+const TABLE_NUMBERS = [2, 3, 4, 5, 6, 7, 8, 9];
+const AUDIO_PATHS: Record<number, string | null> = {
+  2: 'assets/audio/multiplication-song.mp3',
+  3: 'assets/audio/table-3.mp3',
+  4: 'assets/audio/table-4.mp3',
+  5: 'assets/audio/table-5.mp3',
+  6: 'assets/audio/table-6.mp3',
+  7: 'assets/audio/table-7.mp3',
+  8: null,
+  9: 'assets/audio/table-9.mp3',
+};
+const TABLE_NAMES: Record<number, string> = { 2: 'اثنين', 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة', 6: 'ستة', 7: 'سبعة', 8: 'ثمانية', 9: 'تسعة' };
+const TIMINGS_KEY = 'sing-and-learn.tables.v3';
 const SCORES_KEY = 'sing-and-learn.scores.v1';
 
 @Component({
@@ -21,21 +33,29 @@ const SCORES_KEY = 'sing-and-learn.scores.v1';
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('song') song?: ElementRef<HTMLAudioElement>;
 
-  readonly tables = Array.from({ length: 8 }, (_, index) => index + 2);
+  readonly tables = TABLE_NUMBERS;
   readonly questions = Array.from({ length: COUNT }, (_, index) => index + 1);
-  readonly audioUrl = 'assets/audio/multiplication-song.mpeg';
-  readonly table = 2;
+  readonly tableNames = TABLE_NAMES;
+  readonly tableAudio = AUDIO_PATHS;
+  readonly videos: VideoLink[] = TABLE_NUMBERS.filter(table => table !== 8).map(table => ({
+    table,
+    title: `فيديو جدول ${TABLE_NAMES[table]}`,
+    url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+  }));
 
+  table = 2;
   screen: Screen = 'home';
   mode: Mode = 'ordered';
   menuOpen = false;
-  timings: Timing[] = this.emptyTimings();
+  tableConfigs: TableConfig[] = this.emptyConfigs();
   audioDuration = 0;
   currentTime = 0;
   audioStatus = 'التسجيل جاهز للإعداد.';
   setupError = '';
   copyStatus = '';
   gameError = '';
+  audioLoading = false;
   isPlayingSegment = false;
   awaitingAnswer = false;
   feedback: Feedback = 'none';
@@ -49,6 +69,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   scores: SavedScore[] = [];
   finalScore = 0;
 
+  private loadedAudioUrl = '';
   private segmentTimer: number | null = null;
   private advanceTimer: number | null = null;
 
@@ -59,12 +80,20 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const audio = this.song?.nativeElement;
+    audio?.addEventListener('loadstart', () => { this.audioLoading = true; });
     audio?.addEventListener('loadedmetadata', () => {
       this.audioDuration = audio.duration;
       this.audioStatus = `مدة التسجيل: ${this.number(this.audioDuration)} ثانية.`;
     });
+    audio?.addEventListener('loadeddata', () => { this.audioLoading = false; });
     audio?.addEventListener('timeupdate', () => { this.currentTime = audio.currentTime; });
-    audio?.addEventListener('error', () => { this.audioStatus = 'تعذّر تحميل التسجيل. جرّب إعادة التحميل.'; });
+    audio?.addEventListener('error', () => {
+      this.audioLoading = false;
+      this.isPlayingSegment = false;
+      this.awaitingAnswer = false;
+      this.audioStatus = 'تعذّر تحميل التسجيل. جرّب إعادة التحميل.';
+      this.gameError = 'تعذّر تحميل الأغنية. اضغط إعادة المحاولة.';
+    });
   }
 
   ngOnDestroy(): void {
@@ -75,17 +104,38 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     return new Intl.NumberFormat('ar-EG', { maximumFractionDigits: 2, useGrouping: false }).format(value);
   }
 
+  get tableConfig(): TableConfig {
+    return this.tableConfigs.find(config => config.table === this.table) ?? this.emptyConfig(this.table);
+  }
+
+  get tableName(): string {
+    return this.tableNames[this.table] ?? this.number(this.table);
+  }
+
+  get tableAudioUrl(): string {
+    return this.tableConfig.audio ?? '';
+  }
+
+  get audioSource(): string {
+    return this.screen === 'setup' || this.screen === 'game' ? this.tableAudioUrl : '';
+  }
+
+  get activeVideo(): VideoLink | undefined {
+    return this.videos.find(video => video.table === this.table);
+  }
+
   get timingReady(): boolean {
-    return this.timings.every((timing, index) => this.validTiming(timing)
-      && (index === 0 || (this.timings[index - 1].start ?? 0) <= (timing.start ?? 0)));
+    const config = this.tableConfig;
+    return Boolean(config.audio) && config.timings.every((timing, index) => this.validTiming(timing)
+      && (index === 0 || (config.timings[index - 1].start ?? 0) <= (timing.start ?? 0)));
   }
 
   get reviewedCount(): number {
-    return this.timings.filter((timing) => this.validTiming(timing)).length;
+    return this.tableConfig.timings.filter(timing => this.validTiming(timing)).length;
   }
 
   get bestScore(): SavedScore | undefined {
-    return this.scores.slice().sort((a, b) => b.score - a.score)[0];
+    return this.scores.filter(score => score.table === this.table).slice().sort((a, b) => b.score - a.score)[0];
   }
 
   get currentFactor(): number {
@@ -97,11 +147,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   get currentTiming(): Timing {
-    return this.timings[this.currentFactor - 1] ?? { start: null, end: null };
+    return this.tableConfig.timings[this.currentFactor - 1] ?? { start: null, end: null };
   }
 
   get jsonExport(): string {
-    return `${JSON.stringify({ table: this.table, timings: this.timings }, null, 2)}\n`;
+    return `${JSON.stringify({ app: 'Sing and Learn', tables: this.tableConfigs, videos: this.videos }, null, 2)}\n`;
   }
 
   get progressLabel(): string {
@@ -112,21 +162,52 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     return Array.from({ length: COUNT }, () => ({ start: null, end: null }));
   }
 
+  private emptyConfig(table: number): TableConfig {
+    return { table, audio: AUDIO_PATHS[table] ?? null, timings: this.emptyTimings() };
+  }
+
+  private emptyConfigs(): TableConfig[] {
+    return TABLE_NUMBERS.map(table => this.emptyConfig(table));
+  }
+
+  private normalizeTimings(value: unknown): Timing[] {
+    const source = Array.isArray(value) ? value : [];
+    return this.questions.map((_, index) => {
+      const timing = source[index] as { start?: unknown; end?: unknown } | undefined;
+      return {
+        start: typeof timing?.start === 'number' && Number.isFinite(timing.start) ? timing.start : null,
+        end: typeof timing?.end === 'number' && Number.isFinite(timing.end) ? timing.end : null,
+      };
+    });
+  }
+
+  private defaultConfigs(): TableConfig[] {
+    const defaults = (defaultTimingConfig as TimingConfig).tables;
+    return TABLE_NUMBERS.map(table => {
+      const defaultConfig = defaults.find(config => config.table === table);
+      return { table, audio: AUDIO_PATHS[table] ?? null, timings: this.normalizeTimings(defaultConfig?.timings) };
+    });
+  }
+
   private loadTimings(): void {
+    const defaults = this.defaultConfigs();
     try {
       const raw = localStorage.getItem(TIMINGS_KEY);
       if (!raw) {
-        this.timings = defaultTimingConfig.timings.map(timing => ({ start: timing.start, end: timing.end }));
+        this.tableConfigs = defaults;
         return;
       }
-      if (raw) {
-        const parsed = JSON.parse(raw) as TimingConfig;
-        if (parsed.table === 2 && Array.isArray(parsed.timings) && parsed.timings.length === COUNT) {
-          this.timings = parsed.timings.map(timing => ({ start: timing.start ?? null, end: timing.end ?? null }));
-        }
-      }
+      const parsed = JSON.parse(raw) as { tables?: TableConfig[] } & { table?: number; timings?: Timing[] };
+      const saved = Array.isArray(parsed.tables)
+        ? parsed.tables
+        : parsed.table === 2 ? [{ table: 2, audio: AUDIO_PATHS[2], timings: parsed.timings ?? [] }] : [];
+      this.tableConfigs = defaults.map(config => {
+        const match = saved.find(candidate => candidate.table === config.table);
+        return { ...config, timings: this.normalizeTimings(match?.timings ?? config.timings) };
+      });
     } catch {
-      this.setupError = 'تعذّر قراءة التوقيتات المحفوظة. يمكنك إدخالها من جديد.';
+      this.tableConfigs = defaults;
+      this.setupError = 'تعذّر قراءة التوقيتات المحفوظة. يمكنك ضبطها من جديد.';
     }
   }
 
@@ -141,14 +222,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   private saveDraft(): void {
     try {
-      localStorage.setItem(TIMINGS_KEY, JSON.stringify({ table: this.table, timings: this.timings }));
+      localStorage.setItem(TIMINGS_KEY, JSON.stringify({ app: 'Sing and Learn', tables: this.tableConfigs }));
     } catch {
       this.setupError = 'لم يسمح المتصفح بالحفظ. انسخ JSON قبل إغلاق الصفحة.';
     }
   }
 
   private saveScores(): void {
-    try { localStorage.setItem(SCORES_KEY, JSON.stringify(this.scores.slice(-20))); } catch { /* local progress is optional */ }
+    try { localStorage.setItem(SCORES_KEY, JSON.stringify(this.scores.slice(-40))); } catch { /* local progress is optional */ }
   }
 
   validTiming(timing: Timing): boolean {
@@ -157,9 +238,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       && (!this.audioDuration || (timing.end ?? 0) <= this.audioDuration);
   }
 
+  tableAvailable(table: number): boolean {
+    return Boolean(AUDIO_PATHS[table]);
+  }
+
   updateTiming(index: number, field: 'start' | 'end', value: number | string | null): void {
     const numeric = value === '' || value === null ? null : Number(value);
-    this.timings[index] = { ...this.timings[index], [field]: Number.isFinite(numeric) ? numeric : null };
+    this.tableConfig.timings[index] = { ...this.tableConfig.timings[index], [field]: Number.isFinite(numeric) ? numeric : null };
+    this.tableConfigs = [...this.tableConfigs];
     this.setupError = '';
     this.saveDraft();
   }
@@ -169,14 +255,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (field === 'end') this.song?.nativeElement.pause();
   }
 
-  seek(): void {
-    const audio = this.song?.nativeElement;
-    if (!audio) return;
-    audio.currentTime = Math.max(0, Math.min(this.currentTime, this.audioDuration || audio.duration || this.currentTime));
-  }
-
   async preview(index: number): Promise<void> {
-    const timing = this.timings[index];
+    const timing = this.tableConfig.timings[index];
+    if (!this.tableAudioUrl) {
+      this.setupError = `لا يوجد تسجيل لجدول ${this.tableName} حتى الآن.`;
+      return;
+    }
     if (!this.validTiming(timing)) {
       this.setupError = `أدخل بداية ونهاية صحيحتين للسؤال ${this.number(index + 1)} أولًا.`;
       return;
@@ -186,15 +270,28 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   private async playSegment(timing: Timing, onEnded?: () => void): Promise<void> {
     const audio = this.song?.nativeElement;
-    if (!audio || !this.validTiming(timing)) return;
+    if (!audio || !this.tableAudioUrl || !this.validTiming(timing)) return;
     this.stopAudio();
     this.isPlayingSegment = true;
-    this.audioStatus = 'نستمع إلى المقطع…';
-    audio.currentTime = timing.start ?? 0;
+    this.audioLoading = true;
+    this.audioStatus = 'جاري تحميل الأغنية…';
+    const resolvedUrl = new URL(this.tableAudioUrl, document.baseURI).href;
+    if (audio.src !== resolvedUrl) {
+      this.loadedAudioUrl = '';
+      audio.src = this.tableAudioUrl;
+      audio.load();
+    } else if (audio.readyState === HTMLMediaElement.HAVE_NOTHING) {
+      audio.load();
+    }
     try {
+      await this.waitForAudioReady(audio);
+      audio.currentTime = timing.start ?? 0;
       await audio.play();
+      this.loadedAudioUrl = resolvedUrl;
+      this.audioLoading = false;
     } catch {
       this.isPlayingSegment = false;
+      this.audioLoading = false;
       this.gameError = 'تعذّر تشغيل الصوت. اضغط إعادة المحاولة.';
       return;
     }
@@ -206,27 +303,65 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }, 35);
   }
 
+  private waitForAudioReady(audio: HTMLAudioElement): Promise<void> {
+    if (audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      let timeout: number | null = window.setTimeout(() => finish(new Error('audio-timeout')), 15000);
+      const cleanup = (): void => {
+        audio.removeEventListener('canplay', ready);
+        audio.removeEventListener('loadeddata', ready);
+        audio.removeEventListener('error', failed);
+        if (timeout !== null) window.clearTimeout(timeout);
+        timeout = null;
+      };
+      const finish = (error?: Error): void => {
+        cleanup();
+        if (error) reject(error); else resolve();
+      };
+      const ready = (): void => finish();
+      const failed = (): void => finish(new Error('audio-error'));
+      audio.addEventListener('canplay', ready, { once: true });
+      audio.addEventListener('loadeddata', ready, { once: true });
+      audio.addEventListener('error', failed, { once: true });
+    });
+  }
+
   stopAudio(): void {
     if (this.segmentTimer !== null) window.clearInterval(this.segmentTimer);
     this.segmentTimer = null;
     if (this.advanceTimer !== null) window.clearTimeout(this.advanceTimer);
     this.advanceTimer = null;
-    const audio = this.song?.nativeElement;
-    audio?.pause();
+    this.song?.nativeElement.pause();
     this.isPlayingSegment = false;
+    this.audioLoading = false;
   }
 
   retryAudio(): void {
+    this.gameError = '';
     if (this.screen === 'game') this.playCurrentQuestion();
-    else void this.preview(this.currentFactor - 1);
+    else {
+      this.audioStatus = 'جاري إعادة تحميل التسجيل…';
+      this.song?.nativeElement.load();
+    }
   }
 
-  openSetup(): void {
+  openSetup(table = this.table): void {
     this.stopAudio();
+    this.table = table;
     this.screen = 'setup';
     this.setupError = '';
     this.copyStatus = '';
     this.menuOpen = false;
+    this.audioDuration = 0;
+    this.loadedAudioUrl = '';
+  }
+
+  selectSetupTable(table: number): void {
+    this.stopAudio();
+    this.table = table;
+    this.setupError = '';
+    this.audioDuration = 0;
+    this.loadedAudioUrl = '';
   }
 
   closeSetup(): void {
@@ -236,12 +371,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   saveTimings(): void {
-    const invalid = this.timings.findIndex(timing => !this.validTiming(timing));
+    const invalid = this.tableConfig.timings.findIndex(timing => !this.validTiming(timing));
     if (invalid !== -1) {
       this.setupError = `أكمل السؤال ${this.number(invalid + 1)}، وتأكد أن النهاية بعد البداية وداخل التسجيل.`;
       return;
     }
-    const overlap = this.timings.findIndex((timing, index) => index > 0 && (this.timings[index - 1].start ?? 0) > (timing.start ?? 0));
+    const overlap = this.tableConfig.timings.findIndex((timing, index) => index > 0 && (this.tableConfig.timings[index - 1].start ?? 0) > (timing.start ?? 0));
     if (overlap !== -1) {
       this.setupError = `بداية السؤال ${this.number(overlap + 1)} يجب أن تأتي بعد بداية السؤال السابق.`;
       return;
@@ -254,9 +389,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   async copyJson(): Promise<void> {
     try {
       await navigator.clipboard.writeText(this.jsonExport);
-      this.copyStatus = 'نُسخ JSON. الصقه في رسالتك التالية.';
+      this.copyStatus = 'تم النسخ';
     } catch {
-      this.copyStatus = 'لم ينجح النسخ التلقائي. حدّد النص وانسخه يدويًا.';
+      this.copyStatus = 'حدّد النص وانسخه يدويًا';
     }
   }
 
@@ -264,22 +399,28 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const blob = new Blob([this.jsonExport], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'multiplication-table-2-timings.json';
+    link.download = 'sing-and-learn-tables.json';
     link.click();
     URL.revokeObjectURL(link.href);
   }
 
   chooseTable(table: number): void {
-    if (table !== 2) return;
+    if (!this.tableAvailable(table)) return;
+    this.table = table;
     this.menuOpen = false;
     this.screen = 'home';
   }
 
   start(mode: Mode): void {
     this.mode = mode;
+    if (!this.tableAudioUrl) {
+      this.openSetup();
+      this.setupError = `لا يوجد تسجيل لجدول ${this.tableName} حتى الآن.`;
+      return;
+    }
     if (!this.timingReady) {
       this.openSetup();
-      this.setupError = 'اضبط مقاطع الأغنية العشرة أولًا، ثم نبدأ اللعب.';
+      this.setupError = `اضبط مقاطع أغنية جدول ${this.tableName} أولًا، ثم نبدأ اللعب.`;
       return;
     }
     this.order = this.questions.slice();
@@ -291,6 +432,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.wrongOptions.clear();
     this.feedback = 'none';
     this.gameError = '';
+    this.audioDuration = 0;
+    this.loadedAudioUrl = '';
     this.screen = 'game';
     this.prepareQuestion();
   }
@@ -340,7 +483,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.questionIndex++;
     if (this.questionIndex >= COUNT) {
       this.finalScore = this.score;
-      this.scores.push({ score: this.score, total: COUNT, mode: this.mode, playedAt: new Date().toISOString() });
+      this.scores.push({ score: this.score, total: COUNT, mode: this.mode, table: this.table, playedAt: new Date().toISOString() });
       this.saveScores();
       this.stopAudio();
       this.screen = 'complete';
@@ -362,7 +505,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   private makeOptions(): number[] {
     const answer = this.currentAnswer;
-    const nearby = this.currentFactor === 1 ? [4, 6] : [this.table * (this.currentFactor - 1), this.table * (this.currentFactor + 1)];
+    const nearby = this.currentFactor === 1 ? [this.table * 2, this.table * 3] : [this.table * (this.currentFactor - 1), this.table * (this.currentFactor + 1)];
     const values = [...new Set([answer, ...nearby])].filter(value => value > 0);
     while (values.length < 3) values.push(answer + values.length * this.table);
     return this.shuffle(values.slice(0, 3));

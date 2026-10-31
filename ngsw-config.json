@@ -10,8 +10,17 @@
     {
       "name": "audio",
       "installMode": "lazy",
-      "updateMode": "prefetch",
-      "resources": {"files": ["/assets/audio/multiplication-song.mpeg", "/assets/timings.json"]}
+      "updateMode": "lazy",
+      "resources": {"files": [
+        "/assets/audio/multiplication-song.mp3",
+        "/assets/audio/table-3.mp3",
+        "/assets/audio/table-4.mp3",
+        "/assets/audio/table-5.mp3",
+        "/assets/audio/table-6.mp3",
+        "/assets/audio/table-7.mp3",
+        "/assets/audio/table-9.mp3",
+        "/assets/timings.json"
+      ]}
     }
   ]
 }

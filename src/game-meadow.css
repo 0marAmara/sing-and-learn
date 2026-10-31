@@ -22,3 +22,70 @@
 @media(max-width:650px){.game-screen{margin-top:-25px!important;padding-top:0!important}.game-screen .game-header{position:sticky;top:0;z-index:4;width:calc(100% + 32px);max-width:none;min-height:58px;margin:0 -16px;padding:10px 16px;border:0;border-bottom:1px solid #cfddc8;border-radius:0;background:#f6fbf1e8;box-shadow:0 5px 18px #4b714020;backdrop-filter:blur(12px)}.game-screen .game-header .back-button{width:40px;height:40px;padding:0;display:grid;place-items:center;border:0;border-radius:12px;background:#ffffff88;color:#47724d}.game-screen .game-header .back-button .icon-svg{width:23px;height:23px;stroke-width:2.3}.game-screen .game-header>span{font-size:11px;font-weight:700;color:#6f836b}.game-screen .game-header strong{font-size:15px}.game-screen .game-card{margin-top:68px;background:transparent;border-color:transparent;box-shadow:none;backdrop-filter:none}}
 
 @keyframes cloud-drift{from{transform:translateX(-8px)}to{transform:translateX(10px)}}
+
+/* Table themes, lazy audio feedback, and supporting cards. */
+.app-shell {
+  --theme-sun: #f3d077;
+  --theme-sun-ink: #8c682c;
+  --theme-sky: #e7f1e6;
+  --theme-ground: #e9efd9;
+  --theme-ground-deep: #a9c98b;
+  --theme-accent: #f2cb74;
+  --theme-ink: #315e3e;
+}
+.app-shell.table-theme-3 { --theme-sun: #f3b08b; --theme-sun-ink: #874b39; --theme-sky: #f8e9df; --theme-ground: #f0e2d6; --theme-ground-deep: #d2aa8e; --theme-accent: #e6a17b; --theme-ink: #744735; }
+.app-shell.table-theme-4 { --theme-sun: #9fd4e2; --theme-sun-ink: #2e6677; --theme-sky: #e4f1f5; --theme-ground: #dfeef0; --theme-ground-deep: #9bc8ce; --theme-accent: #8cc5d6; --theme-ink: #2d5d6a; }
+.app-shell.table-theme-5 { --theme-sun: #d7b4df; --theme-sun-ink: #704b78; --theme-sky: #f1e8f5; --theme-ground: #eae3f1; --theme-ground-deep: #b9a8cf; --theme-accent: #c8a3d5; --theme-ink: #624773; }
+.app-shell.table-theme-6 { --theme-sun: #f2b7a6; --theme-sun-ink: #874b42; --theme-sky: #f9e9e5; --theme-ground: #f1e3db; --theme-ground-deep: #d9aa99; --theme-accent: #e9aa9a; --theme-ink: #75473f; }
+.app-shell.table-theme-7 { --theme-sun: #92d1b7; --theme-sun-ink: #2f6c58; --theme-sky: #e2f2ed; --theme-ground: #dfede0; --theme-ground-deep: #9fcab2; --theme-accent: #87c5a8; --theme-ink: #2d604e; }
+.app-shell.table-theme-8 { --theme-sun: #e8b9c9; --theme-sun-ink: #815063; --theme-sky: #faeaf0; --theme-ground: #f2e2e8; --theme-ground-deep: #d3a6b6; --theme-accent: #dfa6bb; --theme-ink: #75465a; }
+.app-shell.table-theme-9 { --theme-sun: #edc578; --theme-sun-ink: #7d5a27; --theme-sky: #f5eddc; --theme-ground: #ede8d8; --theme-ground-deep: #c8ba8a; --theme-accent: #dfba69; --theme-ink: #6c552d; }
+.app-shell .sun-orb { background: var(--theme-sun); color: var(--theme-sun-ink); box-shadow: 0 0 0 13px color-mix(in srgb, var(--theme-sun) 18%, transparent); }
+.app-shell .home-screen h1 em { color: var(--theme-ink); }
+.app-shell .home-screen h1 em:after { background: var(--theme-accent); }
+.game-screen:before { background: radial-gradient(circle at 12% 13%, var(--theme-sun) 0 36px, color-mix(in srgb, var(--theme-sun) 14%, transparent) 37px 51px, transparent 52px), linear-gradient(var(--theme-sky) 0 63%, var(--theme-ground) 100%); }
+.game-screen:after { background: linear-gradient(var(--theme-ground-deep) 0 44%, color-mix(in srgb, var(--theme-ground-deep) 88%, #789c69) 45% 72%, color-mix(in srgb, var(--theme-ground-deep) 76%, #5f8c59) 73%); }
+.game-screen .game-header .quiet, .game-screen .game-card h1, .game-screen .game-card .equation, .game-screen .replay { color: var(--theme-ink); }
+.game-screen .progress-dots .current { background: var(--theme-accent); }
+.game-screen .sound-orb { background: color-mix(in srgb, var(--theme-sun) 20%, #fff); }
+.game-screen .sound-orb span { background: var(--theme-ink); }
+
+.audio-loading { display: flex; min-height: 62px; align-items: center; justify-content: center; gap: 10px; margin: 13px auto 8px; color: var(--theme-ink); font-size: 12px; }
+.loading-spinner { width: 28px; height: 28px; border: 4px solid #bed1bd; border-top-color: var(--theme-ink); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.missing-audio { display: flex; align-items: center; gap: 12px; min-height: 66px; color: var(--muted); }
+.missing-audio strong, .missing-audio small { display: block; }
+.missing-audio strong { color: var(--ink); font-size: 13px; }
+.missing-audio small { font-size: 11px; }
+.setup-table-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
+.setup-table-picker button { min-width: 42px; height: 40px; padding: 0 12px; border-radius: 12px; background: #edf3e7; border: 1px solid var(--line); color: var(--ink); font-weight: 800; }
+.setup-table-picker button.selected { background: var(--theme-accent); border-color: var(--theme-ink); color: var(--theme-ink); box-shadow: 0 3px 0 color-mix(in srgb, var(--theme-accent) 70%, #8b9b7b); }
+.setup-table-picker button:disabled { background: #f3f3ed; border-style: dashed; }
+.preview-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.preview-button .icon-svg { width: 15px; height: 15px; fill: currentColor; stroke: none; }
+.learning-video { max-width: 430px; margin: 24px auto 0; text-align: right; }
+.learning-video a { display: grid; grid-template-columns: 92px 1fr 20px; align-items: center; gap: 11px; padding: 9px; border: 1px solid var(--line); border-radius: 16px; background: #fffdf4c7; box-shadow: 0 5px 18px #527d4310; }
+.learning-video img { width: 92px; height: 56px; object-fit: cover; border-radius: 10px; background: #e4ece0; }
+.learning-video strong, .learning-video small { display: block; }
+.learning-video strong { font-size: 12px; color: var(--theme-ink); }
+.learning-video small { margin-top: 1px; font-size: 10px; color: var(--muted); }
+.learning-video .icon-svg { width: 18px; height: 18px; color: var(--theme-ink); }
+.complete-video { margin-top: 26px; }
+.music-poster-card { display: flex; align-items: center; gap: 13px; max-width: 430px; margin: 23px auto 0; padding: 9px; border: 1px solid #3b4c42; border-radius: 17px; background: #101512; color: #eef5e6; text-align: right; }
+.music-poster-card img { width: 68px; height: 68px; object-fit: cover; border-radius: 11px; }
+.music-poster-card strong, .music-poster-card span { display: block; }
+.music-poster-card strong { font-size: 14px; color: #f4d78e; }
+.music-poster-card span { margin-top: 2px; font-size: 11px; color: #d3e0d0; }
+.app-footer { padding: 16px 20px 24px; color: #315e3e; font-size: 15px; font-weight: 800; letter-spacing: .01em; }
+.app-shell.game-playing .app-footer { display: none; }
+@media(max-width:650px) {
+  .app-footer { padding: 13px 16px 20px; font-size: 14px; }
+  .learning-video { margin-top: 20px; }
+  .music-poster-card { margin-top: 18px; }
+}
+.audio-panel { display: flex; flex-direction: column; }
+.audio-panel > .audio-heading { order: 1; }
+.audio-panel > .setup-audio { order: 2; }
+.audio-panel > .audio-help { order: 3; }
+.audio-panel > .audio-error { order: 4; }
+.audio-panel > .missing-audio { order: 1; }
