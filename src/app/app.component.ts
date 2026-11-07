@@ -72,10 +72,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private playbackRequest = 0;
   private segmentTimer: number | null = null;
   private advanceTimer: number | null = null;
+  private readonly arabicNumberFormatter = new Intl.NumberFormat('ar-EG', { maximumFractionDigits: 2, useGrouping: false });
+  private jsonExportValue = '';
 
   constructor() {
     this.loadTimings();
     this.loadScores();
+    this.refreshJsonExport();
   }
 
   ngAfterViewInit(): void {
@@ -101,7 +104,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   number(value: number): string {
-    return new Intl.NumberFormat('ar-EG', { maximumFractionDigits: 2, useGrouping: false }).format(value);
+    return this.arabicNumberFormatter.format(value);
   }
 
   get tableConfig(): TableConfig {
@@ -168,7 +171,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   get jsonExport(): string {
-    return `${JSON.stringify({ app: 'Sing and Learn', tables: this.tableConfigs, videos: this.videos }, null, 2)}\n`;
+    return this.jsonExportValue;
   }
 
   get progressLabel(): string {
@@ -179,6 +182,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (index < this.questionIndex) return `تم السؤال ${this.number(index + 1)}`;
     if (index === this.questionIndex) return `السؤال الحالي ${this.number(index + 1)} من ${this.number(COUNT)}`;
     return `السؤال ${this.number(index + 1)} من ${this.number(COUNT)}`;
+  }
+
+  trackByNumber(_: number, value: number): number {
+    return value;
   }
 
   timingError(index: number): string {
@@ -278,8 +285,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const numeric = value === '' || value === null ? null : Number(value);
     this.tableConfig.timings[index] = { ...this.tableConfig.timings[index], [field]: Number.isFinite(numeric) ? numeric : null };
     this.tableConfigs = [...this.tableConfigs];
+    this.refreshJsonExport();
     this.setupError = '';
     this.saveDraft();
+  }
+
+  private refreshJsonExport(): void {
+    this.jsonExportValue = `${JSON.stringify({ app: 'Sing and Learn', tables: this.tableConfigs, videos: this.videos }, null, 2)}\n`;
   }
 
   markTime(index: number, field: 'start' | 'end'): void {
