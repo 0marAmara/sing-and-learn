@@ -469,3 +469,85 @@
   color: var(--cream);
   background: var(--green);
 }
+
+/* Final interaction polish: transitions stay short and interruptible, while
+   keyboard focus and browser surfaces use the same meadow tokens. */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+audio:focus-visible {
+  outline-color: var(--focus);
+}
+
+html {
+  scrollbar-color: var(--green) var(--pale);
+  scrollbar-width: thin;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+.home-screen h1,
+.setup-screen h1,
+.game-card h1,
+.complete-screen h1 {
+  text-wrap: balance;
+}
+
+.lead,
+.section-title p:last-child,
+.audio-help,
+.home-note {
+  text-wrap: pretty;
+}
+
+.menu-button,
+.setup-link,
+.quiet,
+.text-button,
+.primary,
+.mode-picker button,
+.choice-grid button,
+.replay,
+.learning-video a,
+.table-choice,
+.setup-table-picker button,
+.timing-actions .quiet,
+.preview-button {
+  transition: transform .16s ease-out, background-color .16s ease-out, border-color .16s ease-out, box-shadow .16s ease-out, color .16s ease-out;
+}
+
+.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--green-dark);
+}
+
+.choice-grid button:active:not(:disabled),
+.mode-picker button:active:not(:disabled),
+.quiet:active:not(:disabled),
+.setup-link:active:not(:disabled),
+.learning-video a:active,
+.table-choice:active:not(:disabled),
+.setup-table-picker button:active:not(:disabled),
+.preview-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-button,
+  .setup-link,
+  .quiet,
+  .text-button,
+  .primary,
+  .mode-picker button,
+  .choice-grid button,
+  .replay,
+  .learning-video a,
+  .table-choice,
+  .setup-table-picker button,
+  .timing-actions .quiet,
+  .preview-button {
+    transition: none;
+  }
+}
