@@ -168,6 +168,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     return `${this.number(this.questionIndex + 1)} من ${this.number(COUNT)}`;
   }
 
+  progressDotLabel(index: number): string {
+    if (index < this.questionIndex) return `تم السؤال ${this.number(index + 1)}`;
+    if (index === this.questionIndex) return `السؤال الحالي ${this.number(index + 1)} من ${this.number(COUNT)}`;
+    return `السؤال ${this.number(index + 1)} من ${this.number(COUNT)}`;
+  }
+
+  timingError(index: number): string {
+    const timing = this.tableConfig.timings[index];
+    if (timing.start === null || timing.end === null) return `أدخل بداية ونهاية السؤال ${this.number(index + 1)}.`;
+    if (timing.start < 0) return `بداية السؤال ${this.number(index + 1)} لا يمكن أن تكون سالبة.`;
+    if (timing.end <= timing.start) return `نهاية السؤال ${this.number(index + 1)} يجب أن تأتي بعد البداية.`;
+    if (this.audioDuration > 0 && timing.end > this.audioDuration) return `نهاية السؤال ${this.number(index + 1)} يجب أن تكون داخل مدة التسجيل.`;
+    return `توقيت السؤال ${this.number(index + 1)} صالح.`;
+  }
+
   emptyTimings(): Timing[] {
     return Array.from({ length: COUNT }, () => ({ start: null, end: null }));
   }
