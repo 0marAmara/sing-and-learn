@@ -136,3 +136,176 @@
 @media (prefers-reduced-motion: reduce) {
   .meadow-cloud { animation: none; }
 }
+
+/* Responsive adaptation: keep the meadow calm while giving compact screens
+   enough room for Arabic copy, controls, and safe-area insets. */
+@supports (padding: max(0px)) {
+  .topbar {
+    padding-inline-start: max(16px, env(safe-area-inset-left));
+    padding-inline-end: max(16px, env(safe-area-inset-right));
+  }
+
+  .app-shell main {
+    padding-bottom: max(60px, env(safe-area-inset-bottom));
+  }
+
+  .app-footer {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+
+  .game-screen .game-header {
+    padding-inline-start: max(16px, env(safe-area-inset-left));
+    padding-inline-end: max(16px, env(safe-area-inset-right));
+  }
+}
+
+.setup-progress strong,
+.setup-progress span,
+.setup-footer > span,
+.export-actions > *,
+.audio-heading > div,
+.learning-video span {
+  min-width: 0;
+}
+
+.timing-warning,
+.home-note,
+.error,
+.audio-error {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+  .setup-progress {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    line-height: 1.55;
+  }
+
+  .setup-progress strong,
+  .setup-progress span {
+    flex: 1 1 100%;
+  }
+
+  .setup-footer {
+    gap: 12px;
+    line-height: 1.6;
+  }
+
+  .setup-footer > span {
+    display: block;
+  }
+
+  .timing-card {
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .timing-card input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .timing-actions {
+    gap: 8px;
+  }
+
+  .timing-actions .quiet {
+    min-width: 0;
+  }
+
+  .export-box {
+    padding: 14px;
+  }
+
+  .export-box textarea {
+    min-height: 180px;
+  }
+
+  .game-screen .game-header {
+    gap: 8px;
+  }
+
+  .game-screen .game-header > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  .game-screen .game-card {
+    width: 100%;
+  }
+
+  .choice-grid button {
+    min-height: 84px;
+  }
+
+  .home-screen h1 {
+    font-size: clamp(36px, 12vw, 52px);
+  }
+
+  .learning-video a {
+    grid-template-columns: 76px minmax(0, 1fr) 20px;
+  }
+
+  .learning-video img {
+    width: 76px;
+    height: 56px;
+  }
+
+  .learning-video strong {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-shell main {
+    padding-inline: 12px;
+  }
+
+  .topbar {
+    padding-inline: 12px;
+  }
+
+  .game-screen .game-header {
+    width: calc(100% + 24px);
+    margin-inline: -12px;
+    padding-inline: 12px;
+  }
+
+  .game-screen .game-card {
+    padding-inline: 12px;
+  }
+
+  .choice-grid {
+    gap: 7px;
+  }
+
+  .choice-grid button {
+    min-height: 76px;
+    font-size: 28px;
+  }
+
+  .game-screen .game-card .equation {
+    font-size: 32px;
+  }
+
+  .mode-picker button {
+    width: 58px;
+    height: 58px;
+    min-height: 58px;
+  }
+}
+
+@media (hover: none) {
+  .choice-grid button:hover:not(:disabled),
+  .mode-picker button:hover {
+    transform: none;
+  }
+
+  .choice-grid button:active:not(:disabled),
+  .mode-picker button:active {
+    transform: translateY(1px);
+  }
+}
