@@ -124,6 +124,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     return this.videos.find(video => video.table === this.table);
   }
 
+  useLocalThumbnail(event: Event): void {
+    const image = event.target as HTMLImageElement | null;
+    if (!image || image.dataset['fallback'] === 'true') return;
+    image.dataset['fallback'] = 'true';
+    image.src = 'assets/images/sing-and-learn-poster.webp';
+  }
+
   get timingReady(): boolean {
     const config = this.tableConfig;
     return Boolean(config.audio) && config.timings.every((timing, index) => this.validTiming(timing)
