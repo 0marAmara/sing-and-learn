@@ -309,3 +309,163 @@
     transform: translateY(1px);
   }
 }
+
+/* Color system: sunlit meadow surfaces, evergreen reading contrast, and
+   restrained pastel cues for play modes and answer states. */
+:root {
+  --ink: #1f4d3d;
+  --muted: #496756;
+  --green: #2f7a4e;
+  --green-dark: #225b3d;
+  --cream: #fffdf4;
+  --pale: #e3f0e0;
+  --yellow: #f2c45d;
+  --line: #c8dcc7;
+  --red: #9f4937;
+  --purple: #6b4fa3;
+  --focus: #8a5c22;
+}
+
+.app-shell {
+  --theme-sun: #f4ca63;
+  --theme-sun-ink: #76521d;
+  --theme-sky: #e6f3e7;
+  --theme-ground: #e7efd8;
+  --theme-ground-deep: #a9ca8d;
+  --theme-accent: #efc15a;
+  --theme-ink: #285b41;
+}
+
+.app-shell.table-theme-3 { --theme-sun: #efa27b; --theme-sun-ink: #6f3c2e; --theme-sky: #f9e3d8; --theme-ground: #f0e1d6; --theme-ground-deep: #d19b7d; --theme-accent: #e79268; --theme-ink: #6f3c2e; }
+.app-shell.table-theme-4 { --theme-sun: #7bc9d9; --theme-sun-ink: #225d70; --theme-sky: #e2f3f6; --theme-ground: #deedf0; --theme-ground-deep: #96c9d0; --theme-accent: #76bdcf; --theme-ink: #285f70; }
+.app-shell.table-theme-5 { --theme-sun: #d0add9; --theme-sun-ink: #5d3f69; --theme-sky: #f0e7f4; --theme-ground: #e8e1ef; --theme-ground-deep: #b8a4ca; --theme-accent: #bd96cc; --theme-ink: #5d3f69; }
+.app-shell.table-theme-6 { --theme-sun: #efa593; --theme-sun-ink: #70392f; --theme-sky: #f9e7e2; --theme-ground: #f0e1da; --theme-ground-deep: #d5a28f; --theme-accent: #e99a83; --theme-ink: #70392f; }
+.app-shell.table-theme-7 { --theme-sun: #7bc6a4; --theme-sun-ink: #215b4a; --theme-sky: #e1f2ec; --theme-ground: #dcecdf; --theme-ground-deep: #9cc9af; --theme-accent: #72b995; --theme-ink: #285d4c; }
+.app-shell.table-theme-8 { --theme-sun: #e1a9bf; --theme-sun-ink: #6f3852; --theme-sky: #f9e8ef; --theme-ground: #f0e1e7; --theme-ground-deep: #d0a2b5; --theme-accent: #d996b2; --theme-ink: #6f3852; }
+.app-shell.table-theme-9 { --theme-sun: #f0c267; --theme-sun-ink: #6b4f22; --theme-sky: #f5edda; --theme-ground: #ede7d6; --theme-ground-deep: #c5b784; --theme-accent: #dfb355; --theme-ink: #6b4f22; }
+
+.app-shell .menu-button,
+.app-shell .setup-link,
+.app-shell .quiet,
+.app-shell .text-button {
+  border-color: color-mix(in srgb, var(--theme-ink) 20%, var(--line));
+}
+
+.app-shell .menu-button:hover,
+.app-shell .setup-link:hover,
+.app-shell .quiet:hover,
+.app-shell .text-button:hover {
+  background: color-mix(in srgb, var(--theme-accent) 18%, var(--cream));
+}
+
+.app-shell .drawer {
+  background: color-mix(in srgb, var(--theme-sky) 28%, var(--cream));
+}
+
+.app-shell .table-choice {
+  background: color-mix(in srgb, var(--theme-sky) 50%, var(--cream));
+  border-color: color-mix(in srgb, var(--theme-ink) 14%, var(--line));
+}
+
+.app-shell .table-choice span {
+  background: color-mix(in srgb, var(--theme-accent) 34%, var(--cream));
+  color: var(--theme-ink);
+}
+
+.app-shell .table-choice.active {
+  background: color-mix(in srgb, var(--theme-accent) 30%, var(--cream));
+  border-color: color-mix(in srgb, var(--theme-ink) 45%, var(--line));
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--theme-accent) 60%, var(--line));
+}
+
+.app-shell .mode-picker button:first-child {
+  color: var(--theme-ink);
+  background: color-mix(in srgb, var(--theme-ground-deep) 24%, var(--cream));
+  border-color: color-mix(in srgb, var(--theme-ink) 35%, var(--line));
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--theme-ground-deep) 58%, var(--line));
+}
+
+.app-shell .mode-picker button:last-child {
+  color: var(--purple);
+  background: color-mix(in srgb, var(--purple) 12%, var(--cream));
+  border-color: color-mix(in srgb, var(--purple) 38%, var(--line));
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--purple) 30%, var(--line));
+}
+
+.app-shell .mode-picker button:last-child .mode-icon {
+  color: var(--purple);
+}
+
+.app-shell .game-screen .game-header {
+  color: var(--theme-ink);
+  background: color-mix(in srgb, var(--theme-sky) 62%, var(--cream));
+  border-color: color-mix(in srgb, var(--theme-ink) 18%, var(--line));
+}
+
+.app-shell .game-screen .progress-dots span {
+  background: color-mix(in srgb, var(--theme-ink) 12%, var(--cream));
+}
+
+.app-shell .game-screen .progress-dots .done {
+  background: var(--theme-ink);
+}
+
+.app-shell .game-screen .progress-dots .current {
+  background: var(--theme-accent);
+}
+
+.app-shell .game-screen .game-card {
+  background: color-mix(in srgb, var(--theme-sky) 16%, var(--cream));
+  border-color: color-mix(in srgb, var(--theme-ink) 12%, var(--line));
+}
+
+.app-shell .choice-grid button {
+  color: var(--theme-ink);
+  background: color-mix(in srgb, var(--theme-ground-deep) 28%, var(--cream));
+  border-color: color-mix(in srgb, var(--theme-ground-deep) 52%, var(--line));
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--theme-ground-deep) 58%, var(--line));
+}
+
+.app-shell .choice-grid button:nth-child(2) {
+  background: color-mix(in srgb, #8bc9d4 24%, var(--cream));
+  border-color: color-mix(in srgb, #5798a6 40%, var(--line));
+  box-shadow: 0 5px 0 color-mix(in srgb, #5798a6 42%, var(--line));
+}
+
+.app-shell .choice-grid button:nth-child(3) {
+  background: color-mix(in srgb, #efb36f 27%, var(--cream));
+  border-color: color-mix(in srgb, #bd7d32 35%, var(--line));
+  box-shadow: 0 5px 0 color-mix(in srgb, #bd7d32 38%, var(--line));
+}
+
+.app-shell .choice-grid button.correct {
+  background: #b9dfad;
+  border-color: #6aa35e;
+  box-shadow: 0 5px 0 #75a967;
+}
+
+.app-shell .choice-grid button.wrong {
+  background: #f4d8d2;
+  border-color: #c5897e;
+}
+
+.app-shell .feedback.correct-copy {
+  color: var(--theme-ink);
+}
+
+.app-shell .feedback.wrong-copy,
+.app-shell .timing-warning,
+.app-shell .home-note.warning,
+.app-shell .error,
+.app-shell .audio-error {
+  color: var(--red);
+}
+
+.app-shell .app-footer {
+  color: var(--theme-ink);
+}
+
+::selection {
+  color: var(--cream);
+  background: var(--green);
+}
