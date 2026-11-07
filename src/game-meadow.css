@@ -89,3 +89,49 @@
 .audio-panel > .audio-help { order: 3; }
 .audio-panel > .audio-error { order: 4; }
 .audio-panel > .missing-audio { order: 1; }
+
+/* Audit polish: semantic contrast, resilient focus targets, and clear state feedback. */
+:root {
+  --muted: #4e6657;
+  --red: #8a4d38;
+  --green: #2f603a;
+  --green-dark: #244d39;
+}
+.eyebrow,
+.lead,
+.home-note,
+.drawer p,
+.section-title p:last-child,
+.audio-heading small,
+.audio-help,
+.setup-progress span,
+.timing-card label,
+.game-header > span,
+.game-screen .game-card .game-progress,
+.learning-video small,
+.previous-score small { color: var(--muted); }
+.home-note.warning,
+.error,
+.audio-error,
+.feedback.wrong-copy { color: var(--red); }
+.primary { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+.primary:active { box-shadow: 0 2px 0 var(--green-dark); }
+.timing-warning { color: var(--red) !important; }
+.export-status { color: var(--green) !important; font-weight: 700; }
+.timing-card input[aria-invalid="true"] { border-color: var(--red); box-shadow: 0 0 0 2px #8a4d3830; }
+.menu-button,
+.drawer-head button,
+.game-screen .game-header .back-button { min-width: 44px; min-height: 44px; }
+.setup-table-picker button { min-height: 44px; }
+.timing-actions .quiet,
+.preview-button,
+.replay { min-height: 44px; }
+.timing-actions .quiet { padding-block: 8px; }
+.preview-button { padding-block: 10px; }
+.replay { padding: 7px 8px; }
+.game-screen .game-card .game-progress { color: var(--muted); }
+.learning-video a:focus-visible,
+.music-poster-card:focus-within { outline: 3px solid #8b5a2b; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .meadow-cloud { animation: none; }
+}

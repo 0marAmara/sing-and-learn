@@ -32,11 +32,12 @@ const SCORES_KEY = 'sing-and-learn.scores.v1';
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('song') song?: ElementRef<HTMLAudioElement>;
+  @ViewChild('menuButton') menuButton?: ElementRef<HTMLButtonElement>;
+  @ViewChild('drawerClose') drawerClose?: ElementRef<HTMLButtonElement>;
 
   readonly tables = TABLE_NUMBERS;
   readonly questions = Array.from({ length: COUNT }, (_, index) => index + 1);
   readonly tableNames = TABLE_NAMES;
-  readonly tableAudio = AUDIO_PATHS;
   readonly videos: VideoLink[] = TABLE_NUMBERS.filter(table => table !== 8).map(table => ({
     table,
     title: `فيديو جدول ${TABLE_NAMES[table]}`,
@@ -65,11 +66,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   wrongOptions = new Set<number>();
   score = 0;
   missed = new Set<number>();
-  firstAttempt = new Set<number>();
   scores: SavedScore[] = [];
   finalScore = 0;
 
-  private loadedAudioUrl = '';
+  private playbackRequest = 0;
   private segmentTimer: number | null = null;
   private advanceTimer: number | null = null;
 
@@ -132,6 +132,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   get reviewedCount(): number {
     return this.tableConfig.timings.filter(timing => this.validTiming(timing)).length;
+  }
+
+  get timingOverlapCount(): number {
+    return this.tableConfig.timings.reduce((count, timing, index, timings) => {
+      if (index === 0) return count;
+      const previous = timings[index - 1];
+      return previous.start !== null && previous.end !== null && timing.start !== null && previous.end > timing.start
+        ? count + 1
+        : count;
+    }, 0);
   }
 
   get bestScore(): SavedScore | undefined {
@@ -235,7 +245,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   validTiming(timing: Timing): boolean {
     return Number.isFinite(timing.start) && Number.isFinite(timing.end)
       && (timing.start ?? -1) >= 0 && (timing.end ?? 0) > (timing.start ?? 0)
-      && (!this.audioDuration || (timing.end ?? 0) <= this.audioDuration);
+      && (this.audioDuration <= 0 || (timing.end ?? 0) <= this.audioDuration);
   }
 
   tableAvailable(table: number): boolean {
@@ -272,12 +282,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const audio = this.song?.nativeElement;
     if (!audio || !this.tableAudioUrl || !this.validTiming(timing)) return;
     this.stopAudio();
+    const request = this.playbackRequest;
     this.isPlayingSegment = true;
     this.audioLoading = true;
     this.audioStatus = 'جاري تحميل الأغنية…';
     const resolvedUrl = new URL(this.tableAudioUrl, document.baseURI).href;
     if (audio.src !== resolvedUrl) {
-      this.loadedAudioUrl = '';
       audio.src = this.tableAudioUrl;
       audio.load();
     } else if (audio.readyState === HTMLMediaElement.HAVE_NOTHING) {
@@ -285,11 +295,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
     try {
       await this.waitForAudioReady(audio);
+      if (request !== this.playbackRequest) return;
       audio.currentTime = timing.start ?? 0;
       await audio.play();
-      this.loadedAudioUrl = resolvedUrl;
+      if (request !== this.playbackRequest) return;
       this.audioLoading = false;
     } catch {
+      if (request !== this.playbackRequest) return;
       this.isPlayingSegment = false;
       this.audioLoading = false;
       this.gameError = 'تعذّر تشغيل الصوت. اضغط إعادة المحاولة.';
@@ -327,6 +339,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   stopAudio(): void {
+    this.playbackRequest++;
     if (this.segmentTimer !== null) window.clearInterval(this.segmentTimer);
     this.segmentTimer = null;
     if (this.advanceTimer !== null) window.clearTimeout(this.advanceTimer);
@@ -351,9 +364,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.screen = 'setup';
     this.setupError = '';
     this.copyStatus = '';
-    this.menuOpen = false;
+    this.closeMenu(false);
     this.audioDuration = 0;
-    this.loadedAudioUrl = '';
   }
 
   selectSetupTable(table: number): void {
@@ -361,13 +373,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.table = table;
     this.setupError = '';
     this.audioDuration = 0;
-    this.loadedAudioUrl = '';
   }
 
   closeSetup(): void {
     this.stopAudio();
     this.screen = 'home';
-    this.menuOpen = false;
+    this.closeMenu(false);
   }
 
   saveTimings(): void {
@@ -389,9 +400,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   async copyJson(): Promise<void> {
     try {
       await navigator.clipboard.writeText(this.jsonExport);
-      this.copyStatus = 'تم النسخ';
+      this.copyStatus = 'تم النسخ إلى الحافظة';
     } catch {
-      this.copyStatus = 'حدّد النص وانسخه يدويًا';
+      this.copyStatus = 'تعذّر النسخ؛ حدّد النص وانسخه يدويًا';
     }
   }
 
@@ -407,7 +418,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   chooseTable(table: number): void {
     if (!this.tableAvailable(table)) return;
     this.table = table;
-    this.menuOpen = false;
+    this.closeMenu(false);
     this.screen = 'home';
   }
 
@@ -428,12 +439,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.questionIndex = 0;
     this.score = 0;
     this.missed.clear();
-    this.firstAttempt.clear();
     this.wrongOptions.clear();
     this.feedback = 'none';
     this.gameError = '';
     this.audioDuration = 0;
-    this.loadedAudioUrl = '';
     this.screen = 'game';
     this.prepareQuestion();
   }
@@ -459,7 +468,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (!this.awaitingAnswer || this.wrongOptions.has(value)) return;
     if (value === this.currentAnswer) {
       if (!this.missed.has(this.currentFactor)) this.score++;
-      this.firstAttempt.add(this.currentFactor);
       this.feedback = 'correct';
       this.awaitingAnswer = false;
       this.playTone('correct');
@@ -500,7 +508,22 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.stopAudio();
     this.screen = 'home';
     this.gameError = '';
+    this.closeMenu(false);
+  }
+
+  toggleMenu(): void {
+    if (this.menuOpen) {
+      this.closeMenu();
+      return;
+    }
+    this.menuOpen = true;
+    window.setTimeout(() => this.drawerClose?.nativeElement.focus(), 0);
+  }
+
+  closeMenu(returnFocus = true): void {
+    const wasOpen = this.menuOpen;
     this.menuOpen = false;
+    if (returnFocus && wasOpen) window.setTimeout(() => this.menuButton?.nativeElement.focus(), 0);
   }
 
   private makeOptions(): number[] {

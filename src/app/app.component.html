@@ -1,20 +1,20 @@
 <div class="app-shell" [ngClass]="'table-theme-' + table" [class.game-playing]="screen === 'game'">
   <header class="topbar" [class.game-playing]="screen === 'game'">
-    <button class="menu-button" type="button" (click)="menuOpen = !menuOpen" [attr.aria-expanded]="menuOpen" aria-label="فتح الجداول">
+    <button #menuButton class="menu-button" type="button" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen" [attr.aria-label]="menuOpen ? 'إغلاق الجداول' : 'فتح الجداول'">
       <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
     </button>
     <button class="setup-link" type="button" (click)="openSetup()">إعداد الأغنية</button>
   </header>
 
-  <aside class="drawer" [class.open]="menuOpen" [attr.aria-hidden]="!menuOpen" aria-label="جداول الضرب">
-    <div class="drawer-head"><strong>جداولنا</strong><button type="button" (click)="menuOpen = false" aria-label="إغلاق"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
+  <aside #drawer class="drawer" [class.open]="menuOpen" [attr.aria-hidden]="menuOpen ? null : 'true'" [attr.inert]="menuOpen ? null : ''" aria-label="جداول الضرب" (keydown.escape)="closeMenu()">
+    <div class="drawer-head"><strong>جداولنا</strong><button #drawerClose type="button" (click)="closeMenu()" aria-label="إغلاق"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
     <p>اختر جدولًا لنلعب معه.</p>
     <button class="table-choice setup-choice" type="button" (click)="openSetup()"><span class="table-choice-icon" aria-hidden="true"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M6 6l1.4 1.4M16.6 16.6 18 18M18 6l-1.4 1.4M7.4 16.6 6 18" /><circle cx="12" cy="12" r="4.2" /></svg></span><b>إعداد الأغنية</b><small>للكبار</small></button>
     <button *ngFor="let option of tables" type="button" class="table-choice" [class.active]="option === table" [disabled]="!tableAvailable(option)" (click)="chooseTable(option)">
       <span>{{ number(option) }}</span> <b>جدول {{ tableNames[option] }}</b><small *ngIf="!tableAvailable(option)">قريبًا</small>
     </button>
   </aside>
-  <button *ngIf="menuOpen" class="drawer-backdrop" type="button" aria-label="إغلاق القائمة" (click)="menuOpen = false"></button>
+  <button *ngIf="menuOpen" class="drawer-backdrop" type="button" aria-label="إغلاق القائمة" (click)="closeMenu()"></button>
 
   <main>
     <section [hidden]="screen !== 'home'" class="home-screen" aria-labelledby="home-title">
@@ -38,13 +38,13 @@
 
       <article *ngIf="activeVideo" class="learning-video" aria-label="فيديو تعلّمي">
         <a [href]="activeVideo.url" target="_blank" rel="noopener noreferrer">
-          <img [src]="activeVideo.thumbnail" [alt]="activeVideo.title" loading="lazy">
+          <img [src]="activeVideo.thumbnail" [alt]="activeVideo.title" width="92" height="56" loading="lazy">
           <span><strong>{{ activeVideo.title }}</strong><small>شاهد وتعلّم أكثر</small></span>
           <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
         </a>
       </article>
 
-      <article class="music-poster-card"><img src="assets/images/sing-and-learn-poster.png" alt="ملصق موسيقي لتطبيق Sing and Learn" loading="lazy"><div><strong>غنِّ وتعلّم</strong><span>موسيقى تجعل جدول الضرب أسهل حفظًا.</span></div></article>
+      <article class="music-poster-card"><img src="assets/images/sing-and-learn-poster.webp" alt="ملصق موسيقي لتطبيق Sing and Learn" width="68" height="68" loading="lazy"><div><strong>غنِّ وتعلّم</strong><span>موسيقى تجعل جدول الضرب أسهل حفظًا.</span></div></article>
     </section>
 
     <section [hidden]="screen !== 'setup'" class="setup-screen" aria-labelledby="setup-title">
@@ -56,22 +56,22 @@
           <p class="audio-help">شغّل التسجيل، ثم استخدم «حدّد البداية» و«توقّف هنا». توقّف قبل أن يُقال الجواب.</p>
           <div *ngIf="gameError" class="audio-error" role="alert">{{ gameError }} <button type="button" (click)="retryAudio()">إعادة المحاولة</button></div>
         </ng-container>
-        <audio #song class="setup-audio" controls [attr.preload]="screen === 'game' ? 'auto' : 'none'" [hidden]="!tableAudioUrl" [attr.src]="audioSource || null" (loadedmetadata)="audioDuration = song.duration"></audio>
+        <audio #song class="setup-audio" controls [attr.preload]="screen === 'game' ? 'auto' : 'metadata'" [hidden]="!tableAudioUrl" [attr.src]="audioSource || null" (loadedmetadata)="audioDuration = song.duration"></audio>
         <ng-template #missingAudio><div class="missing-audio"><span class="record-icon" aria-hidden="true"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l10-2v13" /><circle cx="6.5" cy="18" r="3" /><circle cx="16.5" cy="16" r="3" /></svg></span><div><strong>تسجيل جدول {{ tableName }} غير مرفق بعد</strong><small>أضف التسجيل لاحقًا، ثم اضبط المقاطع هنا.</small></div></div></ng-template>
       </div>
-      <div class="setup-progress"><strong>تم ضبط {{ number(reviewedCount) }} من {{ number(questions.length) }}</strong><span>{{ timingReady ? 'كل المقاطع جاهزة للعب' : 'المسودة تُحفظ في هذا المتصفح تلقائيًا' }}</span></div>
+      <div class="setup-progress"><strong>تم ضبط {{ number(reviewedCount) }} من {{ number(questions.length) }}</strong><span>{{ timingReady ? 'كل المقاطع جاهزة للعب' : 'المسودة تُحفظ في هذا المتصفح تلقائيًا' }}</span><span *ngIf="timingOverlapCount" class="timing-warning" role="status">هناك {{ number(timingOverlapCount) }} مقطع متداخل؛ راجع الحدود إذا لم يكن ذلك مقصودًا.</span></div>
       <div class="timing-grid">
         <article *ngFor="let question of questions; let i = index" class="timing-card" [class.ready]="validTiming(tableConfig.timings[i])">
           <div class="timing-head"><span class="question-number">{{ number(question) }}</span><div><h2>السؤال {{ number(question) }}</h2><p class="arabic-equation" dir="ltr" style="direction:ltr;unicode-bidi:bidi-override">؟ = {{ number(question) }} × {{ number(table) }}</p></div><span *ngIf="validTiming(tableConfig.timings[i])" class="check" aria-label="جاهز"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg></span></div>
-          <label>البداية (ثانية)<input type="number" min="0" step="0.01" [ngModel]="tableConfig.timings[i].start" (ngModelChange)="updateTiming(i, 'start', $event)"></label>
-          <label>التوقف قبل الإجابة<input type="number" min="0" step="0.01" [ngModel]="tableConfig.timings[i].end" (ngModelChange)="updateTiming(i, 'end', $event)"></label>
+          <label>البداية (ثانية)<input type="number" min="0" step="0.01" [attr.aria-invalid]="tableConfig.timings[i].start !== null && !validTiming(tableConfig.timings[i]) ? 'true' : null" [ngModel]="tableConfig.timings[i].start" (ngModelChange)="updateTiming(i, 'start', $event)"></label>
+          <label>التوقف قبل الإجابة<input type="number" min="0" step="0.01" [attr.aria-invalid]="tableConfig.timings[i].end !== null && !validTiming(tableConfig.timings[i]) ? 'true' : null" [ngModel]="tableConfig.timings[i].end" (ngModelChange)="updateTiming(i, 'end', $event)"></label>
           <div class="timing-actions"><button class="quiet" type="button" [disabled]="!tableAudioUrl" (click)="markTime(i, 'start')">حدّد البداية</button><button class="quiet" type="button" [disabled]="!tableAudioUrl" (click)="markTime(i, 'end')">توقّف هنا</button></div>
           <button class="preview-button" type="button" [disabled]="!tableAudioUrl" (click)="preview(i)"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z" /></svg><span>جرّب المقطع</span></button>
         </article>
       </div>
       <p *ngIf="setupError" class="error" role="alert">{{ setupError }}</p>
       <div class="setup-footer"><button class="primary" type="button" [disabled]="!tableAudioUrl" (click)="saveTimings()">احفظ وجهّز اللعب</button><span>بعد الحفظ، يمكن للطفل الدخول واختيار الترتيب أو الخلطة.</span></div>
-      <div class="export-box"><textarea readonly [value]="jsonExport" rows="9" dir="ltr" aria-label="كل بيانات جداول Sing and Learn"></textarea><div class="export-actions"><button class="primary" type="button" (click)="copyJson()">نسخ JSON</button><button class="quiet" type="button" (click)="downloadJson()">تنزيل JSON</button></div></div>
+      <div class="export-box"><textarea readonly [value]="jsonExport" rows="9" dir="ltr" aria-label="كل بيانات جداول Sing and Learn"></textarea><div class="export-actions"><button class="primary" type="button" (click)="copyJson()">نسخ JSON</button><button class="quiet" type="button" (click)="downloadJson()">تنزيل JSON</button><span *ngIf="copyStatus" class="export-status" role="status" aria-live="polite">{{ copyStatus }}</span></div></div>
     </section>
 
     <section [hidden]="screen !== 'game'" class="game-screen" [class.is-listening]="!awaitingAnswer" aria-labelledby="game-title">
@@ -93,7 +93,7 @@
 
     <section [hidden]="screen !== 'complete'" class="complete-screen" aria-labelledby="complete-title">
       <div class="finish-flower" aria-hidden="true"><svg viewBox="0 0 72 72"><path d="M36 10c4 0 5 12 9 13s13-6 16-2-8 10-6 14 13 5 12 10-13 2-15 6 3 14-2 16-8-9-12-8-9 11-14 8 1-13-3-16-8-1-12-5 8-10 6-14-13-5-12-10 13-2 15-6-3-14 2-16 8 9 12 8 9-12 14-8Z" /><circle cx="36" cy="36" r="7" /></svg></div><p class="eyebrow">انتهت الجولة</p><h1 id="complete-title">أحسنت يا بطل!</h1><p class="lead">نجوم الإجابات من أول محاولة:</p><div class="final-score"><strong>{{ number(finalScore) }} من {{ number(questions.length) }}</strong><small>{{ mode === 'shuffle' ? 'في الخلطة المرحة' : 'مع ترتيب الأغنية' }}</small></div><button class="primary" type="button" (click)="playAgain()">نلعب مرة أخرى <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.7-4L4 9" /><path d="M4 4v5h5M4 13a8 8 0 0 0 14.7 4L20 15" /><path d="M20 20v-5h-5" /></svg></button><button class="text-button" type="button" (click)="backHome()">العودة لاختيار الجدول</button>
-      <article *ngIf="activeVideo" class="learning-video complete-video"><a [href]="activeVideo.url" target="_blank" rel="noopener noreferrer"><img [src]="activeVideo.thumbnail" [alt]="activeVideo.title" loading="lazy"><span><strong>{{ activeVideo.title }}</strong><small>شاهد وتعلّم أكثر</small></span><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a></article>
+      <article *ngIf="activeVideo" class="learning-video complete-video"><a [href]="activeVideo.url" target="_blank" rel="noopener noreferrer"><img [src]="activeVideo.thumbnail" [alt]="activeVideo.title" width="92" height="56" loading="lazy"><span><strong>{{ activeVideo.title }}</strong><small>شاهد وتعلّم أكثر</small></span><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a></article>
     </section>
   </main>
   <footer class="app-footer">اعداد : ا رحاب الزواوي</footer>
