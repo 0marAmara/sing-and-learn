@@ -1,6 +1,6 @@
 # Sing and Learn
 
-An Angular/PWA prototype for the supplied Arabic multiplication recordings. The drawer contains tables 2–9; tables 3, 4, 5, 6, 7, and 9 include their copied audio, while table 8 stays visibly unavailable until its recording is supplied.
+An Angular/PWA prototype for the supplied Arabic multiplication recordings. The drawer contains tables 2–9, including the newly added table 8 recording.
 
 ## Run
 
@@ -21,4 +21,4 @@ The draft is saved in browser storage. **نسخ JSON** copies every table config
 
 Once all ten boundaries are valid, the child can choose ordered or shuffled play. Correct and incorrect taps use short browser-generated feedback tones, first-attempt scores are saved locally, and the app offers a previous best score on the home screen. The service-worker configuration makes the production build installable as a PWA.
 
-The bundled default timings are stored in `src/assets/timings.json` and load automatically on a fresh browser. Table 2 contains the supplied boundaries; the other available recordings start with empty rows for timing review. They remain editable from **إعداد الأغنية** if you want to refine a boundary after listening again. The home and completion screens also include a replaceable YouTube learning-card placeholder and the supplied artwork with the people removed.
+The bundled default timings are stored in `src/assets/timings.json` and load automatically on a fresh browser. Table 2 contains the supplied boundaries; the other available recordings, including table 8, start with empty rows for timing review. They remain editable from **إعداد الأغنية** if you want to refine a boundary after listening again. The home and completion screens also include a replaceable YouTube learning-card placeholder and the supplied artwork with the people removed.

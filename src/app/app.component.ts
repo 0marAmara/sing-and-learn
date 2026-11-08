@@ -17,7 +17,7 @@ const AUDIO_PATHS: Record<number, string | null> = {
   5: 'assets/audio/table-5.mp3',
   6: 'assets/audio/table-6.mp3',
   7: 'assets/audio/table-7.mp3',
-  8: null,
+  8: 'assets/audio/table-8.mp3',
   9: 'assets/audio/table-9.mp3',
 };
 const TABLE_NAMES: Record<number, string> = { 2: 'اثنين', 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة', 6: 'ستة', 7: 'سبعة', 8: 'ثمانية', 9: 'تسعة' };
@@ -38,7 +38,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   readonly tables = TABLE_NUMBERS;
   readonly questions = Array.from({ length: COUNT }, (_, index) => index + 1);
   readonly tableNames = TABLE_NAMES;
-  readonly videos: VideoLink[] = TABLE_NUMBERS.filter(table => table !== 8).map(table => ({
+  readonly videos: VideoLink[] = TABLE_NUMBERS.map(table => ({
     table,
     title: `فيديو جدول ${TABLE_NAMES[table]}`,
     url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
