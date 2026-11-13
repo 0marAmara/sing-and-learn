@@ -132,51 +132,51 @@
   "videos": [
     {
       "table": 2,
-      "title": "فيديو جدول اثنين",
-      "url": "https://www.youtube.com/watch?v=DHjDVoqXr8Y",
-      "thumbnail": "https://img.youtube.com/vi/DHjDVoqXr8Y/hqdefault.jpg"
-    },
-    {
-      "table": 3,
-      "title": "فيديو جدول ثلاثة",
+      "title": "فيديو جدول ٢",
       "url": "https://www.youtube.com/watch?v=JPlkBEmyFLQ",
       "thumbnail": "https://img.youtube.com/vi/JPlkBEmyFLQ/hqdefault.jpg"
     },
     {
-      "table": 4,
-      "title": "فيديو جدول أربعة",
-      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "thumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+      "table": 3,
+      "title": "فيديو جدول ٣",
+      "url": "https://www.youtube.com/watch?v=DHjDVoqXr8Y",
+      "thumbnail": "https://img.youtube.com/vi/DHjDVoqXr8Y/hqdefault.jpg"
     },
     {
-      "table": 5,
-      "title": "فيديو جدول خمسة",
+      "table": 4,
+      "title": "فيديو جدول ٤",
       "url": "https://www.youtube.com/watch?v=rBU8nK5fgUU",
       "thumbnail": "https://img.youtube.com/vi/rBU8nK5fgUU/hqdefault.jpg"
     },
     {
-      "table": 6,
-      "title": "فيديو جدول ستة",
+      "table": 5,
+      "title": "فيديو جدول ٥",
       "url": "https://www.youtube.com/watch?v=YKmaz6jZG9o",
       "thumbnail": "https://img.youtube.com/vi/YKmaz6jZG9o/hqdefault.jpg"
     },
     {
-      "table": 7,
-      "title": "فيديو جدول سبعة",
+      "table": 6,
+      "title": "فيديو جدول ٦",
       "url": "https://www.youtube.com/watch?v=mCIaEyVyi6Y",
       "thumbnail": "https://img.youtube.com/vi/mCIaEyVyi6Y/hqdefault.jpg"
     },
     {
-      "table": 8,
-      "title": "فيديو جدول ثمانية",
+      "table": 7,
+      "title": "فيديو جدول ٧",
       "url": "https://www.youtube.com/watch?v=T2IEeg7rVZk",
       "thumbnail": "https://img.youtube.com/vi/T2IEeg7rVZk/hqdefault.jpg"
     },
     {
-      "table": 9,
-      "title": "فيديو جدول تسعة",
+      "table": 8,
+      "title": "فيديو جدول ٨",
       "url": "https://www.youtube.com/watch?v=JwANiierzgk",
       "thumbnail": "https://img.youtube.com/vi/JwANiierzgk/hqdefault.jpg"
+    },
+    {
+      "table": 9,
+      "title": "فيديو جدول ٩",
+      "url": "https://www.youtube.com/watch?v=Pt1zlL-IfnQ",
+      "thumbnail": "https://img.youtube.com/vi/Pt1zlL-IfnQ/hqdefault.jpg"
     }
   ]
 }

@@ -20,7 +20,7 @@ const AUDIO_PATHS: Record<number, string | null> = {
   9: 'assets/audio/table-9.mp3',
 };
 const TABLE_NAMES: Record<number, string> = { 2: 'اثنين', 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة', 6: 'ستة', 7: 'سبعة', 8: 'ثمانية', 9: 'تسعة' };
-const CHANNEL_URL = 'https://www.youtube.com/@RehabElZawawi';
+const CHANNEL_URL = 'https://www.youtube.com/@rehabelzawawy5631';
 const SCORES_KEY = 'sing-and-learn.scores.v1';
 
 @Component({

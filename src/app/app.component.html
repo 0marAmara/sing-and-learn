@@ -18,7 +18,7 @@
     <section [hidden]="screen !== 'home'" class="home-screen" aria-labelledby="home-title">
       <div class="sun-orb" aria-hidden="true"><svg class="sun-icon" viewBox="0 0 48 48"><circle cx="24" cy="24" r="9" /><path d="M24 4v7M24 37v7M4 24h7M37 24h7M9.9 9.9l5 5M33.1 33.1l5 5M38.1 9.9l-5 5M14.9 33.1l-5 5" /></svg></div>
       <p class="eyebrow">الجدول المفتوح الآن · <bdi>{{ number(table) }}</bdi></p>
-      <h1 id="home-title">هيا نغنّي<br><em class="table-label" dir="rtl">{{ tableLabel(table) }}</em></h1>
+      <h1 id="home-title">هيا نغنّي<br><em>جدول {{ tableName }}</em></h1>
       <p class="lead">اسمع السؤال، فكّر قليلًا، ثم اختر الإجابة. كل محاولة تقرّبك من اللحن.</p>
 
       <div *ngIf="bestScore" class="previous-score">
