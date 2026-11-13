@@ -76,6 +76,7 @@
 .music-poster-card strong, .music-poster-card span { display: block; }
 .music-poster-card strong { font-size: 14px; color: #f4d78e; }
 .music-poster-card span { margin-top: 2px; font-size: 11px; color: #d3e0d0; }
+.music-poster-card .icon-svg { width: 18px; height: 18px; margin-inline-start: auto; }
 .app-footer { padding: 16px 20px 24px; color: #315e3e; font-size: 15px; font-weight: 800; letter-spacing: .01em; }
 .app-shell.game-playing .app-footer { display: none; }
 @media(max-width:650px) {
