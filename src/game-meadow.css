@@ -160,6 +160,15 @@
   }
 }
 
+/* Shared table labels and the compact mode guidance stay readable in RTL. */
+.table-label { unicode-bidi: plaintext; }
+.table-choice .table-label { display: block; width: auto; height: auto; border-radius: 0; background: transparent; font-size: inherit; }
+.mode-picker .mode-icon { grid-row: auto; }
+.mode-picker .mode-label { display: block; grid-row: auto; align-self: center; font-size: 13px; font-weight: 800; color: currentColor; }
+.shuffle-hint { display: inline-flex; align-items: center; justify-content: center; gap: 7px; margin: 1px 0 0; color: var(--purple); font-size: 12px; font-weight: 800; }
+.shuffle-hint .icon-svg { width: 18px; height: 18px; }
+.runtime-audio { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
 .setup-progress strong,
 .setup-progress span,
 .setup-footer > span,
