@@ -5,6 +5,7 @@ export interface Timing {
 
 export interface TimingConfig {
   tables: TableConfig[];
+  videos?: VideoLink[];
 }
 
 export interface TableConfig {

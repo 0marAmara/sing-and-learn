@@ -21,7 +21,8 @@ const AUDIO_PATHS: Record<number, string | null> = {
   9: 'assets/audio/table-9.mp3',
 };
 const TABLE_NAMES: Record<number, string> = { 2: 'اثنين', 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة', 6: 'ستة', 7: 'سبعة', 8: 'ثمانية', 9: 'تسعة' };
-const TIMINGS_KEY = 'sing-and-learn.tables.v3';
+const CHANNEL_URL = 'https://www.youtube.com/@RehabElZawawi';
+const TIMINGS_KEY = 'sing-and-learn.tables.v4';
 const SCORES_KEY = 'sing-and-learn.scores.v1';
 
 @Component({
@@ -38,12 +39,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   readonly tables = TABLE_NUMBERS;
   readonly questions = Array.from({ length: COUNT }, (_, index) => index + 1);
   readonly tableNames = TABLE_NAMES;
-  readonly videos: VideoLink[] = TABLE_NUMBERS.map(table => ({
-    table,
-    title: `فيديو جدول ${TABLE_NAMES[table]}`,
-    url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-  }));
+  readonly videos: VideoLink[] = (defaultTimingConfig as TimingConfig).videos ?? [];
+  readonly channelUrl = CHANNEL_URL;
 
   table = 2;
   screen: Screen = 'home';
@@ -123,8 +120,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     return this.screen === 'setup' || this.screen === 'game' ? this.tableAudioUrl : '';
   }
 
-  get activeVideo(): VideoLink | undefined {
-    return this.videos.find(video => video.table === this.table);
+  get activeVideos(): VideoLink[] {
+    return this.videos.filter(video => video.table === this.table);
   }
 
   useLocalThumbnail(event: Event): void {
@@ -186,6 +183,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   trackByNumber(_: number, value: number): number {
     return value;
+  }
+
+  trackByVideo(_: number, video: VideoLink): string {
+    return video.url;
   }
 
   timingError(index: number): string {
