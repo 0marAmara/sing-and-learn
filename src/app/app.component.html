@@ -40,11 +40,11 @@
         <a [href]="video.url" target="_blank" rel="noopener noreferrer">
           <img [src]="video.thumbnail" [alt]="video.title" width="92" height="56" loading="lazy" decoding="async" (error)="useLocalThumbnail($event)">
           <span><strong>{{ video.title }}</strong><small>شاهد وتعلّم أكثر</small></span>
-          <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
         </a>
       </article>
 
-      <a class="music-poster-card" [href]="channelUrl" target="_blank" rel="noopener noreferrer"><img src="assets/images/sing-and-learn-poster.webp" alt="ملصق حكاية حصة" width="68" height="68" loading="lazy" decoding="async"><div><strong>حكاية حصة</strong><span>شاهد المزيد من قناة Rehab El-Zawawi.</span></div><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
+      <a class="music-poster-card" [href]="channelUrl" target="_blank" rel="noopener noreferrer"><img src="assets/images/sing-and-learn-poster.webp" alt="ملصق حكاية حصة" width="68" height="68" loading="lazy" decoding="async"><div><strong>حكاية حصة</strong><span>شاهد المزيد من قناة Rehab El-Zawawi.</span></div><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg></a>
     </section>
 
     <section [hidden]="screen !== 'setup'" class="setup-screen" aria-labelledby="setup-title">
@@ -94,7 +94,7 @@
 
     <section [hidden]="screen !== 'complete'" class="complete-screen" aria-labelledby="complete-title">
       <div class="finish-flower" aria-hidden="true"><svg viewBox="0 0 72 72"><path d="M36 10c4 0 5 12 9 13s13-6 16-2-8 10-6 14 13 5 12 10-13 2-15 6 3 14-2 16-8-9-12-8-9 11-14 8 1-13-3-16-8-1-12-5 8-10 6-14-13-5-12-10 13-2 15-6-3-14 2-16 8 9 12 8 9-12 14-8Z" /><circle cx="36" cy="36" r="7" /></svg></div><p class="eyebrow">انتهت الجولة</p><h1 id="complete-title">أحسنت يا بطل!</h1><p class="lead">نجوم الإجابات من أول محاولة:</p><div class="final-score"><strong>{{ number(finalScore) }} من {{ number(questions.length) }}</strong><small>{{ mode === 'shuffle' ? 'في الخلطة المرحة' : 'مع ترتيب الأغنية' }}</small></div><button class="primary" type="button" (click)="playAgain()">نلعب مرة أخرى <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.7-4L4 9" /><path d="M4 4v5h5M4 13a8 8 0 0 0 14.7 4L20 15" /><path d="M20 20v-5h-5" /></svg></button><button class="text-button" type="button" (click)="backHome()">العودة لاختيار الجدول</button>
-      <article *ngFor="let video of activeVideos; trackBy: trackByVideo" class="learning-video complete-video"><a [href]="video.url" target="_blank" rel="noopener noreferrer"><img [src]="video.thumbnail" [alt]="video.title" width="92" height="56" loading="lazy" decoding="async" (error)="useLocalThumbnail($event)"><span><strong>{{ video.title }}</strong><small>شاهد وتعلّم أكثر</small></span><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a></article>
+      <article *ngFor="let video of activeVideos; trackBy: trackByVideo" class="learning-video complete-video"><a [href]="video.url" target="_blank" rel="noopener noreferrer"><img [src]="video.thumbnail" [alt]="video.title" width="92" height="56" loading="lazy" decoding="async" (error)="useLocalThumbnail($event)"><span><strong>{{ video.title }}</strong><small>شاهد وتعلّم أكثر</small></span><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg></a></article>
     </section>
   </main>
   <footer class="app-footer">اعداد : ا رحاب الزواوي</footer>
